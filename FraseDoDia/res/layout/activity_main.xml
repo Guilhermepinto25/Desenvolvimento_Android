@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#73dbf5"
+    tools:context="android.app.frasedodia.MainActivity">
+
+
+    <Button
+        android:id="@+id/botaoNovaFraseId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/texto_frase_dia"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/textoNovaFraseId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/botaoNovaFraseId"
+        android:layout_marginTop="38dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textAlignment="viewStart"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/texto_nova_frase" />
+</RelativeLayout>
