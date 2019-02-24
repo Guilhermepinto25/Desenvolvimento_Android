@@ -33,8 +33,10 @@ public class FlappyBird extends ApplicationAdapter {
     private int estadoJogo = 0;
 
     private Circle passaroCirculo;
-    private Rectangle canoTopoRetangulo;
-    private Rectangle canoBaixoRetangulo;
+    private Rectangle canoTopoRetangulo1;
+    private Rectangle canoBaixoRetangulo1;
+    private Rectangle canoTopoRetangulo2;
+    private Rectangle canoBaixoRetangulo2;
 //    private ShapeRenderer shape;
 
     //Atributos de configuracao
@@ -47,9 +49,11 @@ public class FlappyBird extends ApplicationAdapter {
 	private float velocidadeQueda = 0;
 
 	private float posicaoInicialVertical;
-	private float posicaoMovimentoCanoHorizontal;
+	private float posicaoMovimentoCanoHorizontal1;
+	private float posicaoMovimentoCanoHorizontal2;
     private float espacoEntreCanos;
-    private float alturaEntreCanosRandomica;
+    private float alturaEntreCanosRandomica1;
+    private float alturaEntreCanosRandomica2;
     private Random numeroRandomico;
 
 	private float posicaoPassaroX;
@@ -101,7 +105,8 @@ public class FlappyBird extends ApplicationAdapter {
         alturaDispositivo = VIRTUAL_HIGH;
 
         posicaoInicialVertical = alturaDispositivo/2;
-        posicaoMovimentoCanoHorizontal = larguraDispositivo;
+        posicaoMovimentoCanoHorizontal1 = larguraDispositivo;
+        posicaoMovimentoCanoHorizontal2 = larguraDispositivo + 400; //400 é a distancia entre dois canos consecutivos
         posicaoPassaroX = larguraDispositivo/2 - passaros[0].getWidth()/2;
         espacoEntreCanos = 500;
 }
@@ -128,20 +133,27 @@ public class FlappyBird extends ApplicationAdapter {
             if (posicaoInicialVertical > 0 || velocidadeQueda < 0) posicaoInicialVertical -= velocidadeQueda;
 
             if(estadoJogo == 1){
-                posicaoMovimentoCanoHorizontal -= deltaTime * 250;
+                posicaoMovimentoCanoHorizontal1 -= deltaTime * 250;
+                posicaoMovimentoCanoHorizontal2 -= deltaTime * 250;
 
                 if (Gdx.input.justTouched()) {
                     velocidadeQueda = -15;
                 }
-                //Verifica se o cano saiu inteiramente da tela
-                if (posicaoMovimentoCanoHorizontal < -canoTopo.getWidth()) {
-                    posicaoMovimentoCanoHorizontal = larguraDispositivo;
-                    alturaEntreCanosRandomica = numeroRandomico.nextInt(500) - 250;
+                //Verifica se o cano 1 saiu inteiramente da tela
+                if (posicaoMovimentoCanoHorizontal1 < -canoTopo.getWidth()) {
+                    posicaoMovimentoCanoHorizontal1 = larguraDispositivo;
+                    alturaEntreCanosRandomica1 = numeroRandomico.nextInt(500) - 250;
+                    marcouPonto = false;
+                }
+                //Verifica se o cano 2 saiu inteiramente da tela
+                if (posicaoMovimentoCanoHorizontal2 < -canoTopo.getWidth()) {
+                    posicaoMovimentoCanoHorizontal2 = larguraDispositivo;
+                    alturaEntreCanosRandomica2 = numeroRandomico.nextInt(500) - 250;
                     marcouPonto = false;
                 }
 
                 //Verifica pontuacao
-                if (posicaoMovimentoCanoHorizontal < posicaoPassaroX) {
+                if (posicaoMovimentoCanoHorizontal1 < posicaoPassaroX || posicaoMovimentoCanoHorizontal2 < posicaoPassaroX) {
                     if (!marcouPonto) {
                         marcouPonto = true;
                         pontuacao++;
@@ -154,7 +166,8 @@ public class FlappyBird extends ApplicationAdapter {
                     marcouPonto = false;
                     velocidadeQueda = 0;
                     posicaoInicialVertical = alturaDispositivo/2;
-                    posicaoMovimentoCanoHorizontal = larguraDispositivo;
+                    posicaoMovimentoCanoHorizontal1 = larguraDispositivo;
+                    posicaoMovimentoCanoHorizontal2 = larguraDispositivo + 400;
                 }
             }
         }
@@ -175,8 +188,11 @@ public class FlappyBird extends ApplicationAdapter {
         batch.begin();
 
         batch.draw(fundo, 0,0, larguraDispositivo, alturaDispositivo);
-        batch.draw(canoTopo, posicaoMovimentoCanoHorizontal,alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica);
-        batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal, -espacoEntreCanos/2 + alturaEntreCanosRandomica);
+        batch.draw(canoTopo, posicaoMovimentoCanoHorizontal1,alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica1);
+        batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal1, -espacoEntreCanos/2 + alturaEntreCanosRandomica1);
+        batch.draw(canoTopo, posicaoMovimentoCanoHorizontal2,alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica2);
+        batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal2, -espacoEntreCanos/2 + alturaEntreCanosRandomica2);
+
         batch.draw(passaros[(int)variacao],posicaoPassaroX, posicaoInicialVertical);
         fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo/2 - 10, alturaDispositivo - 100 );
         if (estadoJogo == 2){
@@ -187,15 +203,31 @@ public class FlappyBird extends ApplicationAdapter {
         batch.end();
 
         passaroCirculo.set(posicaoPassaroX + passaros[0].getWidth()/2, posicaoInicialVertical + passaros[0].getHeight()/2, passaros[0].getWidth()/2 );
-        canoBaixoRetangulo = new Rectangle(
-                posicaoMovimentoCanoHorizontal,
-                -espacoEntreCanos/2 + alturaEntreCanosRandomica,
+
+        canoBaixoRetangulo1 = new Rectangle(
+                posicaoMovimentoCanoHorizontal1,
+                -espacoEntreCanos/2 + alturaEntreCanosRandomica1,
                 canoBaixo.getWidth(),
                 canoBaixo.getHeight()
         );
-        canoTopoRetangulo = new Rectangle(
-                posicaoMovimentoCanoHorizontal,
-                alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica,
+
+        canoTopoRetangulo1 = new Rectangle(
+                posicaoMovimentoCanoHorizontal1,
+                alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica1,
+                canoTopo.getWidth(),
+                canoTopo.getHeight()
+        );
+
+        canoBaixoRetangulo2 = new Rectangle(
+                posicaoMovimentoCanoHorizontal2,
+                -espacoEntreCanos/2 + alturaEntreCanosRandomica2,
+                canoBaixo.getWidth(),
+                canoBaixo.getHeight()
+        );
+        
+        canoTopoRetangulo2 = new Rectangle(
+                posicaoMovimentoCanoHorizontal2,
+                alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica2,
                 canoTopo.getWidth(),
                 canoTopo.getHeight()
         );
@@ -209,8 +241,10 @@ public class FlappyBird extends ApplicationAdapter {
         shape.end();*/
 
         //Verifica Colisao
-        if (    Intersector.overlaps(passaroCirculo, canoBaixoRetangulo) ||
-                Intersector.overlaps(passaroCirculo, canoTopoRetangulo) ||
+        if (    Intersector.overlaps(passaroCirculo, canoBaixoRetangulo1) ||
+                Intersector.overlaps(passaroCirculo, canoTopoRetangulo1) ||
+                Intersector.overlaps(passaroCirculo, canoBaixoRetangulo2) ||
+                Intersector.overlaps(passaroCirculo, canoTopoRetangulo2) ||
                 posicaoInicialVertical <= 0){
             estadoJogo = 2;
         }

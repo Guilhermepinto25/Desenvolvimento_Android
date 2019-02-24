@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sat Feb 23 23:33:45 BRT 2019
+#Sun Feb 24 13:54:21 BRT 2019
 17.baseType=DIRECTORY
 4.path=fundo.png
 25.base=C\:\\Users\\guilh\\Desktop\\FlappyBird\\android\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
