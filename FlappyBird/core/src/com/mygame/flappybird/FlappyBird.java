@@ -2,6 +2,7 @@ package com.mygame.flappybird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.Random;
+
+import sun.rmi.runtime.Log;
 
 public class FlappyBird extends ApplicationAdapter {
 
@@ -44,6 +47,9 @@ public class FlappyBird extends ApplicationAdapter {
     private float alturaDispositivo;
     private int pontuacao = 0;
 
+    private Preferences prefs;
+    private int bestScore;
+
     private float deltaTime;
     private float variacao = 0;
 	private float velocidadeQueda = 0;
@@ -59,7 +65,8 @@ public class FlappyBird extends ApplicationAdapter {
 	private float posicaoPassaroX;
 
 	private BitmapFont mensagemReiniciar;
-    private BitmapFont fonte;
+    private BitmapFont placar;
+    private BitmapFont bestScoreAtual;
 	private boolean marcouPonto = false;
 
 	//Camera
@@ -67,6 +74,7 @@ public class FlappyBird extends ApplicationAdapter {
     private Viewport viewport;
     private final float VIRTUAL_WIDTH = 768;
     private final float VIRTUAL_HIGH = 1024;
+
 
 	@Override
 	public void create () {
@@ -77,14 +85,22 @@ public class FlappyBird extends ApplicationAdapter {
         canoTopoRetangulo = new Rectangle();
         shape = new ShapeRenderer();*/
 
-        fonte = new BitmapFont();
-        fonte.setColor(Color.WHITE);
-        fonte.getData().setScale(6);
+        placar = new BitmapFont();
+        placar.setColor(Color.WHITE);
+        placar.getData().setScale(6);
         passaros = new Texture[3];
 
         mensagemReiniciar = new BitmapFont();
         mensagemReiniciar.setColor(Color.WHITE);
         mensagemReiniciar.getData().setScale(3);
+
+        prefs = Gdx.app.getPreferences("My Preferences");
+        bestScore =  prefs.getInteger("bestScore",0);
+
+        bestScoreAtual = new BitmapFont();
+        bestScoreAtual.setColor(Color.WHITE);
+        bestScoreAtual.getData().setScale(2);
+
         passaros[0] = new Texture("passaro1.png");
         passaros[1] = new Texture("passaro2.png");
         passaros[2] = new Texture("passaro3.png");
@@ -113,7 +129,6 @@ public class FlappyBird extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-
 	    camera.update();
 
 	    //Limpar frames anteriores
@@ -161,6 +176,10 @@ public class FlappyBird extends ApplicationAdapter {
                 }
             }else { //Game Over - estadoJogo = 2
                 if (Gdx.input.justTouched()){
+                    if (pontuacao > bestScore ){
+                        prefs.putInteger("bestScore", pontuacao);
+                        prefs.flush();
+                    }
                     estadoJogo = 0;
                     pontuacao = 0;
                     marcouPonto = false;
@@ -194,7 +213,9 @@ public class FlappyBird extends ApplicationAdapter {
         batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal2, -espacoEntreCanos/2 + alturaEntreCanosRandomica2);
 
         batch.draw(passaros[(int)variacao],posicaoPassaroX, posicaoInicialVertical);
-        fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo/2 - 10, alturaDispositivo - 100 );
+        placar.draw(batch, String.valueOf(pontuacao), larguraDispositivo/2 - 10, alturaDispositivo - 100 );
+        bestScoreAtual.draw(batch, "Best Score: " + String.valueOf(prefs.getInteger("bestScore",0)), 20, alturaDispositivo - 20 );
+
         if (estadoJogo == 2){
             batch.draw(gameOver, larguraDispositivo/2 - gameOver.getWidth()/2, alturaDispositivo/2);
             mensagemReiniciar.draw(batch, "Toque para Reiniciar!",larguraDispositivo/2 - gameOver.getWidth()/2 - 10, alturaDispositivo/2 - 50 );
@@ -224,7 +245,7 @@ public class FlappyBird extends ApplicationAdapter {
                 canoBaixo.getWidth(),
                 canoBaixo.getHeight()
         );
-        
+
         canoTopoRetangulo2 = new Rectangle(
                 posicaoMovimentoCanoHorizontal2,
                 alturaDispositivo - canoTopo.getHeight() + espacoEntreCanos/2 + alturaEntreCanosRandomica2,
