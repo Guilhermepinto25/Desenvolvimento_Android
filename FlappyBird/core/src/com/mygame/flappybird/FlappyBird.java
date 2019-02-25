@@ -85,22 +85,31 @@ public class FlappyBird extends ApplicationAdapter {
         canoTopoRetangulo = new Rectangle();
         shape = new ShapeRenderer();*/
 
-        placar = new BitmapFont();
-        placar.setColor(Color.WHITE);
-        placar.getData().setScale(6);
-        passaros = new Texture[3];
+        placar = new BitmapFont(
+                Gdx.files.internal("font.fnt"),
+                Gdx.files.internal("font.png"),
+                false);
+        //placar.setColor(Color.WHITE);
+        placar.getData().setScale(1);
 
-        mensagemReiniciar = new BitmapFont();
+        mensagemReiniciar = new BitmapFont(
+                Gdx.files.internal("font.fnt"),
+                Gdx.files.internal("font.png"),
+                false);
         mensagemReiniciar.setColor(Color.WHITE);
-        mensagemReiniciar.getData().setScale(3);
+        mensagemReiniciar.getData().setScale((float) 0.25);
 
         prefs = Gdx.app.getPreferences("My Preferences");
         bestScore =  prefs.getInteger("bestScore",0);
 
-        bestScoreAtual = new BitmapFont();
-        bestScoreAtual.setColor(Color.WHITE);
-        bestScoreAtual.getData().setScale(2);
+        bestScoreAtual = new BitmapFont(
+                Gdx.files.internal("font.fnt"),
+                Gdx.files.internal("font.png"),
+                false);
+        //bestScoreAtual.setColor(Color.WHITE);
+        bestScoreAtual.getData().setScale((float) 0.2);
 
+        passaros = new Texture[3];
         passaros[0] = new Texture("passaro1.png");
         passaros[1] = new Texture("passaro2.png");
         passaros[2] = new Texture("passaro3.png");
@@ -213,12 +222,15 @@ public class FlappyBird extends ApplicationAdapter {
         batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal2, -espacoEntreCanos/2 + alturaEntreCanosRandomica2);
 
         batch.draw(passaros[(int)variacao],posicaoPassaroX, posicaoInicialVertical);
-        placar.draw(batch, String.valueOf(pontuacao), larguraDispositivo/2 - 10, alturaDispositivo - 100 );
+        placar.draw(batch,
+                String.valueOf(pontuacao),
+                larguraDispositivo/2 - placar.getScaleX() - ((pontuacao<10) ? 30:50),
+                alturaDispositivo - 100 );
         bestScoreAtual.draw(batch, "Best Score: " + String.valueOf(prefs.getInteger("bestScore",0)), 20, alturaDispositivo - 20 );
 
         if (estadoJogo == 2){
             batch.draw(gameOver, larguraDispositivo/2 - gameOver.getWidth()/2, alturaDispositivo/2);
-            mensagemReiniciar.draw(batch, "Toque para Reiniciar!",larguraDispositivo/2 - gameOver.getWidth()/2 - 10, alturaDispositivo/2 - 50 );
+            mensagemReiniciar.draw(batch, "Toque para Reiniciar!",larguraDispositivo/2 - gameOver.getWidth()/2, alturaDispositivo/2 - 50 );
         }
 
         batch.end();
