@@ -90,7 +90,7 @@ public class FlappyBird extends ApplicationAdapter {
                 Gdx.files.internal("font.png"),
                 false);
         //placar.setColor(Color.WHITE);
-        placar.getData().setScale(1);
+        placar.getData().setScale((float) 0.7);
 
         mensagemReiniciar = new BitmapFont(
                 Gdx.files.internal("font.fnt"),
@@ -224,13 +224,13 @@ public class FlappyBird extends ApplicationAdapter {
         batch.draw(passaros[(int)variacao],posicaoPassaroX, posicaoInicialVertical);
         placar.draw(batch,
                 String.valueOf(pontuacao),
-                larguraDispositivo/2 - placar.getScaleX() - ((pontuacao<10) ? 30:50),
+                larguraDispositivo/2 - placar.getScaleX() - ((pontuacao<10) ? 25:45),
                 alturaDispositivo - 100 );
         bestScoreAtual.draw(batch, "Best Score: " + String.valueOf(prefs.getInteger("bestScore",0)), 20, alturaDispositivo - 20 );
 
         if (estadoJogo == 2){
             batch.draw(gameOver, larguraDispositivo/2 - gameOver.getWidth()/2, alturaDispositivo/2);
-            mensagemReiniciar.draw(batch, "Toque para Reiniciar!",larguraDispositivo/2 - gameOver.getWidth()/2, alturaDispositivo/2 - 50 );
+            mensagemReiniciar.draw(batch, "Toque para Reiniciar!",larguraDispositivo/2 - gameOver.getWidth()/2 + 10, alturaDispositivo/2 - 50 );
         }
 
         batch.end();
